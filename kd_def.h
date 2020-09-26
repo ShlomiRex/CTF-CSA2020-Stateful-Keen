@@ -24,7 +24,7 @@
 #include "SL_FILE.H"
 
 #define FRILLS	0			// Cut out frills for 360K - MIKE MAYNARD
-
+#define CREDITS 0
 
 /*
 =============================================================================
@@ -33,8 +33,6 @@
 
 =============================================================================
 */
-
-#define CREDITS 0
 
 #define	MAXACTORS	MAXSPRITES
 
@@ -86,6 +84,7 @@ typedef struct
   void (*contact) ();
   void (*react) ();
   void *nextstate;
+  int 	chosenshapenum;
 } statetype;
 
 
@@ -100,6 +99,9 @@ typedef	struct
 	int		mapon;
 	int		lives;
 	int		difficulty;
+	unsigned char  key[16];
+	int key_index;
+	unsigned char second_flag[24];
 } gametype;
 
 

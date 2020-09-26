@@ -32,6 +32,7 @@ MODEL	MEDIUM,C
 	DATASEG
 
 rndindex	dw	?
+rndindex2	dw	?
 
 rndtable db    0,   8, 109, 220, 222, 241, 149, 107,  75, 248, 254, 140,  16,  66
     db   74,  21, 211,  47,  80, 242, 154,  27, 205, 128, 161,  89,  77,  36
@@ -97,6 +98,16 @@ PROC	US_InitRndT randomize:word
 	ret
 
 ENDP
+PROC    CP_InitRndT seed:word
+	uses	si,di
+	public  CP_InitRndT
+	
+	mov	ax,[seed]
+	and	ax,0ffh
+	mov	[rndindex2],ax
+	
+	ret
+ENDP
 
 ;=================================================
 ;
@@ -115,6 +126,19 @@ PROC	US_RndT
 	mov	al,[rndtable+BX]
 	xor	ah,ah
 
+	ret
+
+ENDP
+PROC	CP_RndT
+	public	CP_RndT
+
+	mov	bx,[rndindex2]
+	mov	al,[rndtable+BX]
+	inc	bx
+	and	bx,0ffh
+	mov	[rndindex2],bx
+	xor	ah,ah
+	
 	ret
 
 ENDP

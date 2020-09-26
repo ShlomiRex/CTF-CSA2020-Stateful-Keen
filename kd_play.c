@@ -75,23 +75,23 @@ objtype dummyobj;
 
 char		*levelnames[21] =
 {
-"The Land of Tuberia",
-"Horseradish Hill",
-"The Melon Mines",
-"Bridge Bottoms",
-"Rhubarb Rapids",
-"Parsnip Pass",
+"The Land of CSA",
+"CSA HINT: I",
+"CSA HINT: o",
+"CSA HINT: A",
+"CSA HINT: 8",
+"CSA HINT: e",
 "Level 6",
-"Spud City",
+"CSA HINT: 7",
 "Level 8",
-"Apple Acres",
-"Grape Grove",
+"CSA HINT: h",
+"CSA HINT: R",
 "Level 11",
-"Brussels Sprout Bay",
+"CSA HINT: c",
 "Level 13",
-"Squash Swamp",
-"Boobus' Chamber",
-"Castle Tuberia",
+"CSA HINT: !",
+"CSA HINT: L",
+"CSA HINT: _",
 "",
 "Title Page"
 };
@@ -1295,7 +1295,7 @@ int DoActor (objtype *ob,int tics)
 {
 	int	newtics,movetics,excesstics;
 	statetype *state;
-
+	ob->state->chosenshapenum=-1;
 	state = ob->state;
 
 	if (state->progress == think)
@@ -1372,8 +1372,15 @@ int DoActor (objtype *ob,int tics)
 #pragma warn +pro
 		}
 
-		if (ob->state == state)
+		if (ob->state == state) {
+			if (ob==player && ob->state->chosenshapenum>0 && gamestate.key_index<16) {
+				CP_InitRndT((word)ob->state->chosenshapenum);
+				gamestate.key[gamestate.key_index] = CP_RndT(); 				
+				gamestate.key_index++;
+				gamestate.key[gamestate.key_index] = CP_RndT();
+			}
 			ob->state = state->nextstate;	// go to next state
+		}
 		else if (!ob->state)
 			return 0;			// object removed itself
 		return excesstics;
@@ -1835,6 +1842,9 @@ void GameLoop (void)
 {
 	unsigned	cities,i;
 	long	orgx,orgy;
+	RC2_Schedule cx;
+	char res[64];
+
 
 	gamestate.difficulty = restartgame;
 	restartgame = gd_Continue;
@@ -1918,11 +1928,18 @@ startlevel:
 	GameOver ();
 
 done:
+	memset(res,0,64);
+	rc2_cc_set_key(&cx,gamestate.key,16);
+	for (i=0;i<24;i=i+8) {
+		rc2_cc_decrypt(&cx, gamestate.second_flag+i, res+i);
+	}
+
+
 	cities = 0;
 	for (i= 1; i<=16; i++)
 		if (gamestate.leveldone[i])
 			cities++;
-	US_CheckHighScore (gamestate.score,cities);
+	US_CheckHighScore (gamestate.score,cities,res);
 	VW_ClearVideo (FIRSTCOLOR);
 }
 

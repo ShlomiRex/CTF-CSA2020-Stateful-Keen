@@ -66,6 +66,8 @@ void NewGame (void)
 {
 	word	i;
 
+	unsigned char arr2[24] = {0x61, 0x71, 0xf9, 0x53, 0xa6, 0x63, 0x65, 0x2, 0xc7, 0x15, 0xf0, 0x70, 0xf1, 0x95, 
+		0x66, 0x1, 0x6, 0x50, 0x17, 0x35, 0x1c, 0x12, 0xc0, 0xfb};
 	gamestate.worldx = 0;		// spawn keen at starting spot
 
 	gamestate.mapon = 0;
@@ -73,6 +75,8 @@ void NewGame (void)
 	gamestate.nextextra = 20000;
 	gamestate.lives = 3;
 	gamestate.flowerpowers = gamestate.boobusbombs = 0;
+
+	memcpy(gamestate.second_flag,arr2,24);
 	for (i = 0;i < GAMELEVELS;i++)
 		gamestate.leveldone[i] = false;
 }
@@ -116,9 +120,9 @@ void
 GameOver (void)
 {
 	VW_InitDoubleBuffer ();
-	US_CenterWindow (16,3);
+	US_CenterWindow (40,3);
 
-	US_PrintCentered("Game Over!");
+	US_PrintCentered("Game Over! No flag for you!");
 
 	VW_UpdateScreen ();
 	IN_ClearKeysDown ();
@@ -143,8 +147,8 @@ void StatusWindow (void)
 
 	// DEBUG - make this look better
 
-	US_CenterWindow(22,7);
-	US_CPrint("Status Window");
+	US_CenterWindow(40,7);
+	US_CPrint("Status Window - the flag isn't here (;");
 
 	WindowX += 8;
 	WindowW -= 8;
@@ -519,7 +523,7 @@ DemoLoop (void)
 
 				displayofs = 0;
 				VWB_Bar(0,0,320,200,FIRSTCOLOR);
-				US_DisplayHighScores(-1);
+				US_DisplayHighScores(-1,NULL);
 
 				if (IN_UserInput(TickBase * 6, false))
 					break;

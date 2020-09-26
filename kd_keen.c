@@ -1656,6 +1656,17 @@ void KeenSleepThink (objtype *ob)
 
 void KeenDieThink (objtype *ob)
 {
+	switch(gamestate.mapon){
+	case 4:
+		ob->state->chosenshapenum = s_keendie3.rightshapenum;
+		gamestate.key_index = gamestate.mapon;
+		break;
+	case 14:
+		ob->state->chosenshapenum = s_keendie3.leftshapenum;				
+		gamestate.key_index = 6;
+		break;
+	}
+
 	ob++;			// shut up compiler
 	playstate = died;
 }
@@ -1752,6 +1763,24 @@ void KeenWalkThink (objtype *ob)
 {
 	int move;
 
+	if (ob->state == &s_keenwalk1) {
+		ob->state->chosenshapenum = s_keenwalk1.rightshapenum;
+		gamestate.key_index = 8;
+	}
+	else if (ob->state == &s_keenwalk2) {
+		ob->state->chosenshapenum = s_keenwalk2.rightshapenum;
+		gamestate.key_index = 10;
+	}
+	else if (ob->state == &s_keenwalk3) {
+		ob->state->chosenshapenum = s_keenwalk3.rightshapenum;
+		gamestate.key_index = 12;
+	}
+	else if (ob->state == &s_keenwalk4) {
+		ob->state->chosenshapenum = s_keenwalk4.rightshapenum;
+		gamestate.key_index = 14;
+	}
+	
+	
 	if (!c.xaxis)
 	{
 	//
@@ -1813,6 +1842,18 @@ void	KeenAirThink		(objtype *ob)
 {
 	if (jumptime)
 	{
+		if (ob->state  == &s_keenjumpup1) {
+			switch(gamestate.mapon){
+			case 1:
+				ob->state->chosenshapenum = s_keenjumpup1.rightshapenum;
+				gamestate.key_index = gamestate.mapon-1;
+				break;
+			case 2:
+				ob->state->chosenshapenum = s_keenjumpup1.leftshapenum;				
+				gamestate.key_index = gamestate.mapon;
+				break;
+			}
+		}
 		if (jumptime<tics)
 		{
 			ob->ymove = ob->yspeed*jumptime;
